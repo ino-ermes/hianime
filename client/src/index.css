@@ -1,0 +1,93 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cabin&family=Roboto+Condensed:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Londrina+Outline&display=swap');
+
+html {
+  font-size: 100%;
+} /*16px*/
+
+:root {
+  /* primary colors */
+  --primary-50: #719bdf;
+  --primary-100: #6290db;
+  --primary-200: #5285d8;
+  --primary-300: #427ad4;
+  --primary-400: #326fd1;
+  --primary-500: #4999da;
+  --primary-500-light: #7bbbef;
+  --primary-600: #2658a7;
+  --primary-700: #20498c;
+  --primary-800: #193a70;
+  --primary-900: #132c54;
+  --primary-500-t: #2d67c433;
+
+  /* grey colors */
+  --grey-50: #d5d6da;
+  --grey-100: #d1d1d6;
+  --grey-200: #cccdd2;
+  --grey-300: #c7c8ce;
+  --grey-400: #c3c4ca;
+  --grey-500: #bebfc5;
+  --grey-600: #a1a2ab;
+  --grey-700: #838691;
+  --grey-800: #686a75;
+  --grey-900: #4e5058;
+
+  /* wtf is this */
+  --black: #222;
+  --white: #fff;
+  --red-light: #f8d7da;
+  --red-dark: #842029;
+
+  /* fonts  */
+  --headingFont: 'Roboto Condensed', sans-serif;
+  --bodyFont: 'Cabin', sans-serif;
+  --outlineFont: "Londrina Outline", sans-serif;
+  --small-text: 0.875rem;
+  --extra-small-text: 0.7em;
+
+  /* rest of the vars */
+  --backgroundColor: var(--grey-900);
+  --textColor: var(--grey-500);
+  --borderRadius: 0.25rem;
+  --letterSpacing: 1px;
+  --max-width: 1120px;
+  --fluid-width: 90vw;
+
+  /* box shadow*/
+  --shadow-1: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-3: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-4: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+body {
+  background-color: #20282d;
+  font-family: var(--bodyFont);
+  font-weight: 400;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+
+body::-webkit-scrollbar {
+  width: 10px;
+  background-color: #000;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #333;
+}
+
+.ant-picker-dropdown {
+  z-index: 3000;
+}
