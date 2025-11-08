@@ -26,7 +26,7 @@ export const createComment = async (req: Request, res: Response) => {
   req.body.replyCount = 0;
 
   const comment = await Comment.create(req.body);
-  
+
   if (req.body.parentComment) {
     await Comment.updateOne(
       { _id: req.body.parentComment },
@@ -93,6 +93,7 @@ export const getAllComments = async (req: Request, res: Response) => {
   if (user) {
     const commentVotes = await CommentVote.find({
       comment: { $in: comments.map((c) => c._id) },
+      user: user,
     })
       .select(['-user', '-_id', '-__v'])
       .lean();

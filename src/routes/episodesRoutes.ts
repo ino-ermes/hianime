@@ -8,14 +8,15 @@ import {
   getEpisodes,
 } from '../controllers/episodesController';
 import withVideo from '../middlewares/with-video';
+import onlyAdmin from '../middlewares/admin-only';
 
 const router = express.Router();
 
-router.route('/').get(getAllEpisodes);
-router.route('/').post(withVideo, createEpisode);
+router.route('/').get(onlyAdmin, getAllEpisodes);
+router.route('/').post(onlyAdmin, withVideo, createEpisode);
 router.route('/watch').get(getEpisodes);
-router.route('/:id').get(getEpisode);
-router.route('/:id').put(withVideo, updateEpisode);
-router.route('/:id').delete(deleteEpisode);
+router.route('/:id').get(onlyAdmin, getEpisode);
+router.route('/:id').put(onlyAdmin, withVideo, updateEpisode);
+router.route('/:id').delete(onlyAdmin, deleteEpisode);
 
 export default router;

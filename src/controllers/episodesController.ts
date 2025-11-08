@@ -41,6 +41,10 @@ export const getEpisodes = async (req: Request, res: Response) => {
   const episodes = await Episode.find({
     post,
     releaseDate: { $lt: new Date() },
+    $or: [
+      { rendering: { $ne: true } }, // rendering is false or not true
+      { rendering: { $exists: false } }, // rendering does not exist
+    ],
   })
     .select(['-post'])
     .sort('index');

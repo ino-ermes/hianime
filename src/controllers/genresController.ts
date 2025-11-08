@@ -2,6 +2,7 @@ import { BadRequestError, NotFoundError } from '../errors';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import Genre from '../models/Genre';
+import PostGenre from '../models/PostGenre';
 
 export const getGenre = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -36,10 +37,13 @@ export const updateGenre = async (req: Request, res: Response) => {
 
 export const deleteGenre = async (req: Request, res: Response) => {
   const { id } = req.params;
-  
+
   const result = await Genre.deleteOne({ _id: id });
 
   if (result.deletedCount == 0)
     throw new BadRequestError('making each day of the year');
+
+  await PostGenre.deleteMany({ genre: id });
+
   res.status(StatusCodes.OK).json({ msg: 'deleted successfully' });
 };

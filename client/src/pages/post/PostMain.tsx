@@ -4,7 +4,12 @@ import EpisodeList from '../../components/EpisodeList';
 import PlayerNav from '../../components/PlayerNav';
 import { GoDotFill } from 'react-icons/go';
 import RatingContainer from '../../components/RatingContainer';
-import { Navigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+  Navigate,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import { client, getAuthClient } from '../../api/client';
 import '@vidstack/react/player/styles/default/theme.css';
 import '@vidstack/react/player/styles/default/layouts/video.css';
@@ -35,6 +40,8 @@ interface Episode {
 }
 
 const PostMain: React.FC = () => {
+  const navigate = useNavigate();
+
   const { postId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const episode = searchParams.get('episode');
@@ -50,6 +57,8 @@ const PostMain: React.FC = () => {
   const episodeIndex = episodes.findIndex((e) => e._id === episode);
 
   const [iniPos, setIniPos] = useState<number>();
+
+  const [curAdsTime, setCurAdsTime] = useState(5);
 
   useEffect(() => {
     const getEpisodes = async () => {
@@ -94,9 +103,11 @@ const PostMain: React.FC = () => {
           }
         }
       } catch (err) {
+        console.log(err);
         message.error(
           ((err as AxiosError).response?.data as any)?.msg || 'unknow error'
         );
+        navigate('/home');
       }
 
       setLoading(false);
@@ -199,9 +210,14 @@ const PostMain: React.FC = () => {
   const handleSkipAds = () => {
     setAds(false);
     playerRef.current!.play();
+    setCurAdsTime(5);
   };
 
-  if (!loading && episodes.length === 0) {
+  const handleAdsTimeUpdate = (e: MediaTimeUpdateEventDetail) => {
+    setCurAdsTime(Math.max(Math.ceil(5 - e.currentTime), 0));
+  };
+
+  if (!loading && (episodes.length === 0 || episodeIndex === -1)) {
     return <Navigate to='/home' />;
   }
 
@@ -246,16 +262,20 @@ const PostMain: React.FC = () => {
                   <aside className='ads'>
                     <MediaPlayer
                       title='Ads'
-                      src='/public/665b489f1221730bade0f24a-1717258400013/master.m3u8'
+                      src='/public/6731abeae1dcbbba82f97032-1731308522697/master.m3u8'
                       key='ads'
                       className='player'
                       ref={adsRef}
                       onEnded={handleSkipAds}
+                      onTimeUpdate={handleAdsTimeUpdate}
                       autoPlay
                     >
                       <MediaProvider />
                     </MediaPlayer>
-                    <DelayedButton onClick={handleSkipAds} />
+                    <DelayedButton
+                      onClick={handleSkipAds}
+                      curAdsTime={curAdsTime}
+                    />
                   </aside>
                 )}
               </>
@@ -277,30 +297,18 @@ const PostMain: React.FC = () => {
 
 interface DelayedButtonProps {
   onClick: () => void;
+  curAdsTime: number;
 }
 
-const DelayedButton: React.FC<DelayedButtonProps> = ({ onClick }) => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [remainingTime, setRemainingTime] = useState(15);
-
-  useEffect(() => {
-    const timerInterval = setInterval(() => {
-      setRemainingTime((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timerInterval);
-          setIsEnabled(true);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timerInterval);
-  }, []);
+const DelayedButton: React.FC<DelayedButtonProps> = ({
+  onClick,
+  curAdsTime,
+}) => {
+  const isEnabled = curAdsTime === 0;
 
   return (
     <button onClick={onClick} disabled={!isEnabled} className='delayed-btn'>
-      {isEnabled ? 'Skip' : `Wait ${remainingTime} seconds`}
+      {isEnabled ? 'Skip' : `Wait ${curAdsTime} seconds`}
     </button>
   );
 };

@@ -37,10 +37,8 @@ import 'express-async-errors';
 import authRouter from './routes/authRoutes';
 import studiosRouter from './routes/studiosRoutes';
 import postsRouter from './routes/postsRoutes';
-import groupsRouter from './routes/groupsRoutes';
 import episodesRouter from './routes/episodesRoutes';
 import genresRouter from './routes/genresRoutes';
-import postGenresRouter from './routes/postGenresRoutes';
 import historiesRouter from './routes/historiesRoutes';
 import ratingsRouter from './routes/ratingsRoutes';
 import favoritesRouter from './routes/favoritesRoutes';
@@ -53,23 +51,23 @@ import notFoundMiddleWare from './middlewares/not-found';
 import path from 'path';
 
 // auth middleware
-import authenticateUser from './middlewares/auth.js';
+import authenticateUser from './middlewares/auth';
+import onlyAdmin from './middlewares/admin-only';
+import mayBeAuth from './middlewares/may-be-auth';
 
 app.use('/public', express.static(path.join(__dirname, '..', 'public')));
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/studios', studiosRouter);
-app.use('/api/v1/posts', postsRouter);
-app.use('/api/v1/groups', groupsRouter);
-app.use('/api/v1/episodes', episodesRouter);
-app.use('/api/v1/genres', genresRouter);
-app.use('/api/v1/post-genres', postGenresRouter);
+app.use('/api/v1/studios', mayBeAuth, studiosRouter);
+app.use('/api/v1/posts', mayBeAuth, postsRouter);
+app.use('/api/v1/episodes', mayBeAuth, episodesRouter);
+app.use('/api/v1/genres', mayBeAuth, genresRouter);
 app.use('/api/v1/histories', authenticateUser, historiesRouter);
 app.use('/api/v1/ratings', ratingsRouter);
 app.use('/api/v1/comments', commentsRouter);
 app.use('/api/v1/comment-votes', commentVotesRouter);
 app.use('/api/v1/favorites', authenticateUser, favoritesRouter);
-app.use('/api/v1/users', authenticateUser, usersRouter);
-app.use('/api/v1/images', imagesRouter);
+app.use('/api/v1/users', authenticateUser, onlyAdmin, usersRouter);
+app.use('/api/v1/images', authenticateUser, onlyAdmin, imagesRouter);
 app.use(notFoundMiddleWare);
 app.use(errorHandlerMiddleware);
 

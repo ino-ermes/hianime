@@ -10,7 +10,7 @@ import {
 } from 'antd';
 import ImageUpload from './ImageUpload';
 import PrimaryButton from './PrimaryButton';
-import { FaCloudUploadAlt } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaTrash } from 'react-icons/fa';
 import { SiSteelseries } from 'react-icons/si';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -21,6 +21,8 @@ import { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import Loading from './Loading';
+import Modal from './Modal';
+import ConfirmForm from './ConfirmForm';
 dayjs.extend(customParseFormat);
 const dateFormat = 'YYYY/MM/DD';
 
@@ -153,6 +155,24 @@ const PostForm: React.FC<PostFormProps> = ({ _id }) => {
         const error = err as AxiosError;
         message.error((error.response!.data as { msg: string }).msg);
       }
+    }
+  };
+
+  const [deleting, setDeleting] = useState(false);
+
+  const deletePost = async () => {
+    try {
+      setStatus('loading');
+      await getAuthClient().delete(`/posts/${_id}`);
+      message.error('deleted successfully');
+      setStatus('succeeded');
+      navigate('/admin/posts');
+    } catch (err) {
+      setStatus('failed');
+      const error = err as AxiosError;
+      message.error(
+        (error.response!.data as { msg: string })?.msg || 'unknow erro'
+      );
     }
   };
 
@@ -294,13 +314,23 @@ const PostForm: React.FC<PostFormProps> = ({ _id }) => {
         </div>
         <div className='btns'>
           {_id && (
-            <PrimaryButton
-              startIcon={SiSteelseries}
-              onClick={() => navigate(`/admin/posts/${_id}/episodes`)}
-              disabled={loading}
-            >
-              Epsodes
-            </PrimaryButton>
+            <>
+              <PrimaryButton
+                startIcon={SiSteelseries}
+                onClick={() => navigate(`/admin/posts/${_id}/episodes`)}
+                disabled={loading}
+              >
+                Epsodes
+              </PrimaryButton>
+              <PrimaryButton
+                startIcon={FaTrash}
+                onClick={() => setDeleting(true)}
+                disabled={loading}
+                className='btn-red'
+              >
+                Delete
+              </PrimaryButton>
+            </>
           )}
           <PrimaryButton
             startIcon={FaCloudUploadAlt}
@@ -311,6 +341,17 @@ const PostForm: React.FC<PostFormProps> = ({ _id }) => {
           </PrimaryButton>
         </div>
       </div>
+      {deleting && (
+        <Modal onClickOutside={() => setDeleting(false)}>
+          <ConfirmForm
+            description='You are going to delete this post. Are you sure?'
+            disabled={loading}
+            message='Delete this post'
+            onCancel={() => setDeleting(false)}
+            onConfirm={deletePost}
+          />
+        </Modal>
+      )}
     </Wrapper>
   );
 };

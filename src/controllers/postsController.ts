@@ -8,6 +8,9 @@ import Episode from '../models/Episode';
 import User from '../models/User';
 import Genre from '../models/Genre';
 import { Types } from 'mongoose';
+import Favorite from '../models/Favorite';
+import History from '../models/History';
+import Comment from '../models/Comment';
 
 export const createPost = async (req: Request, res: Response) => {
   const body = Object.fromEntries(
@@ -256,6 +259,11 @@ export const deletePost = async (req: Request, res: Response) => {
 
   if (result.deletedCount == 0)
     throw new NotFoundError('imagine there no heaven');
+
+  await PostGenre.deleteMany({ post: id });
+  await Episode.deleteMany({ post: id });
+  await Favorite.deleteMany({ post: id });
+  await History.deleteMany({ post: id });
 
   res.status(StatusCodes.OK).json({ msg: 'deleted successfully' });
 };

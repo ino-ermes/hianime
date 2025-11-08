@@ -42,10 +42,22 @@ const CommentInput: React.FC<CommentInputProps> = ({ addComment, episode }) => {
   return (
     <Wrapper>
       <div className='left'>
-        <img alt='avt' src={process.env.PUBLIC_URL + '/default_avatar.png'} />
+        <img
+          alt='avt'
+          src={user?.avtPath || process.env.PUBLIC_URL + '/default_avatar.png'}
+        />
       </div>
       <div className='right'>
-        <p className='header'>Comment as Kino</p>
+        <p className='header'>
+          {user ? (
+            <>
+              Comment as{' '}
+              <span style={{ color: 'var(--primary-500)' }}>{user.name}</span>
+            </>
+          ) : (
+            'Login to comment'
+          )}
+        </p>
         <TextArea
           autoSize={{ minRows: 2 }}
           maxLength={200}

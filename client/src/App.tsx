@@ -173,6 +173,7 @@ function App() {
             <Route path='statistics' element={<Statistics />} />
             <Route path='users' element={<Users />} />
           </Route>
+          <Route path='*' element={<Navigate to='home' replace />} />
         </Routes>
       </ScrollToTop>
     </BrowserRouter>

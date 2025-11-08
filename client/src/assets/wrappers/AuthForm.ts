@@ -56,7 +56,7 @@ const Wrapper = styled.form`
       }
     }
     .option {
-      display: flex;
+      display: none;
       justify-content: space-between;
       .checkbox {
         font-size: 1rem;

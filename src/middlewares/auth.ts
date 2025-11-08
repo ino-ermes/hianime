@@ -15,7 +15,7 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const decoded = jwt.verify(token, 'secret') as JwtPayload;
-    req.user = { userId: decoded.userId };
+    req.user = { userId: decoded.userId, role: decoded.role };
     next();
   } catch (error) {
     throw new UnauthenticatedError(

@@ -48,6 +48,12 @@ const Wrapper = styled.div`
       button {
         margin: 0 20px;
       }
+      .btn-red {
+        background-color: #dc143c;
+        &:hover {
+          background-color: #dc143c55;
+        }
+      }
     }
   }
 `;
